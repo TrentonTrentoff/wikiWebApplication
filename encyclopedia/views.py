@@ -11,8 +11,8 @@ def index(request):
 def article(request, article):
     if not util.get_entry(article):
         return render (request, "encyclopedia/content.html", {
-        "title": None,
-        "content": None
+        "title": article,
+        "content": "There is no article under this name!"
     })
     else:
         return render (request, "encyclopedia/content.html", {
