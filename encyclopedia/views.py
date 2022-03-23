@@ -75,3 +75,6 @@ def newpage(request):
             title = title.capitalize()
             util.save_entry(title, content)
             return HttpResponseRedirect(reverse("encyclopedia:article", args=[title]))
+
+def editpage(request):
+    pass
