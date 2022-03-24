@@ -1,10 +1,14 @@
-from turtle import title
-from django.shortcuts import render
-from django import forms
-from django.urls import reverse
-from django.http import HttpResponseRedirect
-from . import util
 from random import randint
+from turtle import title
+
+from django import forms
+from django.http import HttpResponseRedirect
+from django.shortcuts import render
+from django.urls import reverse
+import markdown2
+
+from . import util
+
 
 class NewSearchForm(forms.Form):
     search = forms.CharField(label = "Search")
@@ -24,15 +28,15 @@ def index(request):
 
 def article(request, article):
     if not util.get_entry(article):
-        return render (request, "encyclopedia/content.html", {
-        "title": article,
-        "content": "There is no article under this name!",
-        "form": NewSearchForm()
+        return render (request, "encyclopedia/error.html", {
+            "form": NewSearchForm(),
     })
     else:
+        content = util.get_entry(article)
+        content = markdown2.markdown(content)
         return render (request, "encyclopedia/content.html", {
         "title": article,
-        "content": util.get_entry(article),
+        "content": content,
         "form": NewSearchForm()
     })
 
