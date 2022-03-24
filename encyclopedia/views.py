@@ -4,6 +4,7 @@ from django import forms
 from django.urls import reverse
 from django.http import HttpResponseRedirect
 from . import util
+from random import randint
 
 class NewSearchForm(forms.Form):
     search = forms.CharField(label = "Search")
@@ -95,3 +96,9 @@ def editpage(request, article):
         article = article.capitalize()
         util.save_entry(article, content)
         return HttpResponseRedirect(reverse("encyclopedia:article", args=[article]))
+
+def random(request):
+    allEntries = util.list_entries()
+    chosenArticle = randint(0, (len(allEntries) - 1))
+    chosenArticle = allEntries[chosenArticle]
+    return HttpResponseRedirect(reverse("encyclopedia:article", args=[chosenArticle]))
