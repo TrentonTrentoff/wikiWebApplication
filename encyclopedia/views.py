@@ -12,6 +12,9 @@ class NewArticleForm(forms.Form):
     title = forms.CharField(label="Title of Article")
     content = forms.CharField(widget=forms.Textarea, label = "Content of Article")
 
+class NewEditForm(forms.Form):
+    content = forms.CharField(label = "Content of Article", widget=forms.Textarea)
+
 def index(request):
     return render(request, "encyclopedia/index.html", {
         "entries": util.list_entries(),
@@ -76,5 +79,19 @@ def newpage(request):
             util.save_entry(title, content)
             return HttpResponseRedirect(reverse("encyclopedia:article", args=[title]))
 
-def editpage(request):
-    pass
+def editpage(request, article):
+    if request.method == "GET":
+        value = util.get_entry(article)
+        form = NewEditForm(initial={'content': value})
+        return render (request, "encyclopedia/edit.html", {
+            "contentTitle": article,
+            "form": NewSearchForm(),
+            "articleForm": form
+        })
+    else:
+        content = NewEditForm(request.POST)
+        if content.is_valid():
+            content = content.cleaned_data["content"]
+        article = article.capitalize()
+        util.save_entry(article, content)
+        return HttpResponseRedirect(reverse("encyclopedia:article", args=[article]))
